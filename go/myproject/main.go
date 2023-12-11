@@ -36,4 +36,6 @@ func main() {
 	}
 
 	fmt.Println(myId)
+
+	fmt.Println(mylib.UserDetails())
 }
