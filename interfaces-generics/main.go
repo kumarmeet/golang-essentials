@@ -54,24 +54,18 @@ func main() {
 		return
 	}
 
-	todo.Display()
-	err = saveData(todo)
+	err = outputData(todo)
 
 	if err != nil {
 		return
 	}
 
-	userNote.Display()
-	err = saveData(userNote)
-
-	if err != nil {
-		return
-	}
+	outputData(userNote)
 }
 
-func outputData(data outputtable) {
+func outputData(data outputtable) error {
 	data.Display()
-	saveData(data)
+	return saveData(data)
 }
 
 func saveData(data saver) error {
