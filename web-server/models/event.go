@@ -54,6 +54,8 @@ func GetAllEvents() ([]Event, error) {
 
 	rows, err := db.DB.Query(query)
 
+	fmt.Println(rows)
+
 	if err != nil {
 		return nil, err
 	}

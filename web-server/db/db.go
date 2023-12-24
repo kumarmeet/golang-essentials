@@ -12,7 +12,7 @@ var DB *sql.DB
 func InitDB() {
 	// Use a single equal sign to assign to the global variable instead of :=
 	var err error
-	DB, err = sql.Open("mysql", "root:password@tcp(127.0.0.1:3306)/event")
+	DB, err = sql.Open("mysql", "root:password@tcp(127.0.0.1:3306)/event?parseTime=true")
 
 	if err != nil {
 		log.Fatal("DB not connected:", err) // Use log.Fatal to log the error and exit the program

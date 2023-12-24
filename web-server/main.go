@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -17,7 +16,6 @@ func main() {
 		events, err := models.GetAllEvents()
 
 		if err != nil {
-			fmt.Println(err)
 			ctx.JSON(http.StatusBadRequest, gin.H{"message": "Could not fetch data, try again later"})
 			return
 		}
@@ -31,7 +29,6 @@ func main() {
 		err := ctx.ShouldBindJSON(&event)
 
 		if err != nil {
-			fmt.Println(err)
 			ctx.JSON(http.StatusBadRequest, gin.H{"message": "Could not parsed request data!"})
 			return
 		}
