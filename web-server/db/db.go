@@ -25,7 +25,25 @@ func InitDB() {
 }
 
 func createTables() {
+
 	createEventsTable := `
+	CREATE TABLE IF NOT EXISTS users (
+		id INTEGER PRIMARY KEY AUTO_INCREMENT, -- Use AUTO_INCREMENT for MySQL
+		name VARCHAR(255) NOT NULL,
+		email VARCHAR(255) NOT NULL UNIQUE,
+		password TEXT NOT NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Use DEFAULT CURRENT_TIMESTAMP for auto-setting timestamps
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+	);
+`
+
+	_, err := DB.Exec(createEventsTable)
+
+	if err != nil {
+		log.Fatal("Could not create events table:", err) // Use log.Fatal to log the error and exit the program
+	}
+
+	createEventsTable = `
 	CREATE TABLE IF NOT EXISTS events (
 		id INTEGER PRIMARY KEY AUTO_INCREMENT, -- Use AUTO_INCREMENT for MySQL
 		name VARCHAR(255) NOT NULL,
@@ -33,10 +51,11 @@ func createTables() {
 		location VARCHAR(255) NOT NULL,
 		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Use DEFAULT CURRENT_TIMESTAMP for auto-setting timestamps
 		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-		user_id INTEGER
+		user_id INTEGER,
+		FOREIGN KEY(user_id) REFERENCES users(id)
 	);
 `
-	_, err := DB.Exec(createEventsTable)
+	_, err = DB.Exec(createEventsTable)
 
 	if err != nil {
 		log.Fatal("Could not create events table:", err) // Use log.Fatal to log the error and exit the program

@@ -15,7 +15,7 @@ type Event struct {
 	Location    string `binding:"required"`
 	Created_At  time.Time
 	Updated_At  time.Time
-	UserId      int `binding:"required"`
+	UserId      User
 }
 
 // var events []Event = []Event{}
@@ -44,6 +44,48 @@ func (e *Event) Save() (int64, error) {
 	fmt.Println("ID", id)
 	if err != nil {
 		return 0, err
+	}
+
+	return id, nil
+}
+
+func (e *Event) GetEvent(id int64) (*Event, error) {
+	query := "SELECT * FROM events where id = ?"
+
+	row := db.DB.QueryRow(query, id)
+
+	err := row.Scan(&e.ID, &e.Name, &e.Description, &e.Location, &e.Created_At, &e.Updated_At, &e.UserId)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return e, nil
+}
+
+func (e *Event) UpdateEvent(id int64) (int64, error) {
+	query := "UPDATE events SET name = ?, description = ?, location = ?, user_id = ? where id = ?"
+
+	stmt, err := db.DB.Prepare(query)
+
+	// err = row.Scan()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer stmt.Close()
+
+	result, err := stmt.Exec(&e.Name, &e.Description, &e.Location, &e.UserId, id)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	id, err = result.RowsAffected()
+
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	return id, nil
@@ -79,4 +121,30 @@ func GetAllEvents() ([]Event, error) {
 	}
 
 	return events, nil
+}
+
+func (e *Event) DeleteEvent(id int64) (int64, error) {
+	query := "DELETE FROM events where id = ?"
+
+	stmt, err := db.DB.Prepare(query)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer stmt.Close()
+
+	result, err := stmt.Exec(id)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	id, err = result.RowsAffected()
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return id, nil
 }
