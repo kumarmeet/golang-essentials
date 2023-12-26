@@ -91,20 +91,27 @@ func UpdateEventById(ctx *gin.Context) {
 }
 
 func InsertEvent(ctx *gin.Context) {
+	id := ctx.GetInt64("userId")
+
 	var event models.Event
 
 	err := ctx.ShouldBindJSON(&event)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Could not parsed request data!"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
-	_, err = event.Save()
+	event.UserId = id
+
+	eventId, err := event.Save()
 
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"message": "Could not saved data!"})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"message": "Data successfully saved.", "event": event})
+	eventData, _ := event.GetEvent(eventId)
+
+	ctx.JSON(http.StatusCreated, gin.H{"message": "Data successfully saved.", "event": eventData})
 }

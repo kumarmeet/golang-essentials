@@ -9,13 +9,13 @@ import (
 )
 
 type Event struct {
-	ID          int64
-	Name        string `binding:"required"`
-	Description string `binding:"required"`
-	Location    string `binding:"required"`
-	Created_At  time.Time
-	Updated_At  time.Time
-	UserId      User
+	ID          int64     `json:"id"`
+	Name        string    `json:"name" binding:"required"`
+	Description string    `json:"description" binding:"required"`
+	Location    string    `json:"location" binding:"required"`
+	Created_At  time.Time `json:"created_at"`
+	Updated_At  time.Time `json:"updated_at"`
+	UserId      int64     `json:"user_id"`
 }
 
 // var events []Event = []Event{}
@@ -50,6 +50,7 @@ func (e *Event) Save() (int64, error) {
 }
 
 func (e *Event) GetEvent(id int64) (*Event, error) {
+
 	query := "SELECT * FROM events where id = ?"
 
 	row := db.DB.QueryRow(query, id)
@@ -114,14 +115,38 @@ func GetAllEvents() ([]Event, error) {
 			return nil, err
 		}
 
-		event.Created_At, _ = time.Parse("2006-01-02 15:04:05", event.Created_At.Format("2006-01-02 15:04:05"))
-		event.Updated_At, _ = time.Parse("2006-01-02 15:04:05", event.Updated_At.Format("2006-01-02 15:04:05"))
+		// eve := map[string]interface{}{
+		// 	"id":          event.ID,
+		// 	"name":        event.Name,
+		// 	"description": event.Description,
+		// 	"location":    event.Location,
+		// 	"createdat":   event.Created_At,
+		// 	"updatedat":   event.Updated_At,
+		// 	"user_id":     event.UserId,
+		// }
+
+		// newEvent := mapToEvent(eve)
+
+		// event.Created_At, _ = time.Parse("2006-01-02 15:04:05", event.Created_At.Format("2006-01-02 15:04:05"))
+		// event.Updated_At, _ = time.Parse("2006-01-02 15:04:05", event.Updated_At.Format("2006-01-02 15:04:05"))
 
 		events = append(events, event)
 	}
 
 	return events, nil
 }
+
+// func mapToEvent(m map[string]interface{}) Event {
+// 	return Event{
+// 		ID:          m["id"].(int64),
+// 		Name:        m["name"].(string),
+// 		Description: m["description"].(string),
+// 		Location:    m["location"].(string),
+// 		Created_At:  m["createdat"].(time.Time),
+// 		Updated_At:  m["updatedat"].(time.Time),
+// 		UserId:      m["user_id"].(int64),
+// 	}
+// }
 
 func (e *Event) DeleteEvent(id int64) (int64, error) {
 	query := "DELETE FROM events where id = ?"

@@ -1,144 +1,95 @@
 package models
 
 import (
+	"errors"
+	"log"
 	"time"
+
+	"github.com/learning-webserver/db"
+	"github.com/learning-webserver/utils"
 )
 
 type User struct {
-	ID         int64
-	Email      string `binding:"required"`
-	Password   string `binding:"required"`
-	Created_At time.Time
-	Updated_At time.Time
+	ID         int64     `json:"id"`
+	Name       string    `json:"name" binding:"required"`
+	Email      string    `json:"email" binding:"required"`
+	Password   string    `json:"password" binding:"required"`
+	Created_At time.Time `json:"created_at"`
+	Updated_At time.Time `json:"updated_at"`
 }
 
-// var events []Event = []Event{}
+func (u *User) Save() (int64, error) {
+	query := `
+		INSERT INTO users(name, email, password) VALUES (?, ?, ?)
+	`
+	stmt, err := db.DB.Prepare(query)
 
-// func (e *Event) Save() (int64, error) {
-// 	query := `
-// 		INSERT INTO events(name, description, location, user_id) VALUES (?, ?, ?, ?)
-// 	`
-// 	stmt, err := db.DB.Prepare(query)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+	defer stmt.Close()
 
-// 	defer stmt.Close()
+	hashedPassword, err := utils.HashPassword(u.Password)
 
-// 	result, err := stmt.Exec(e.Name, e.Description, e.Location, e.UserId)
+	if err != nil {
+		return 0, err
+	}
 
-// 	if err != nil {
-// 		return 0, err
-// 	}
+	result, err := stmt.Exec(u.Name, u.Email, hashedPassword)
 
-// 	// events = append(events, *e)
+	if err != nil {
+		return 0, err
+	}
 
-// 	id, err := result.LastInsertId()
-// 	fmt.Println("ID", id)
-// 	if err != nil {
-// 		return 0, err
-// 	}
+	id, err := result.LastInsertId()
 
-// 	return id, nil
-// }
+	if err != nil {
+		return 0, err
+	}
 
-// func (e *Event) GetEvent(id int64) (*Event, error) {
-// 	query := "SELECT * FROM events where id = ?"
+	return id, nil
+}
 
-// 	row := db.DB.QueryRow(query, id)
+func (u *User) GetUser(id int64) (*User, error) {
+	query := "SELECT * FROM users where id = ?"
 
-// 	err := row.Scan(&e.ID, &e.Name, &e.Description, &e.Location, &e.Created_At, &e.Updated_At, &e.UserId)
+	row := db.DB.QueryRow(query, id)
 
-// 	if err != nil {
-// 		return nil, err
-// 	}
+	err := row.Scan(&u.ID, &u.Name, &u.Email, &u.Password, &u.Created_At, &u.Updated_At)
 
-// 	return e, nil
-// }
+	if err != nil {
+		return nil, err
+	}
 
-// func (e *Event) UpdateEvent(id int64) (int64, error) {
-// 	query := "UPDATE events SET name = ?, description = ?, location = ?, user_id = ? where id = ?"
+	return u, nil
+}
 
-// 	stmt, err := db.DB.Prepare(query)
+func (u *User) ValidCreds(email, password string) (*User, error) {
+	query := "SELECT id, password FROM users where email = ?"
 
-// 	// err = row.Scan()
+	row := db.DB.QueryRow(query, email)
 
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+	var retrivedPassword string
+	var id int64
 
-// 	defer stmt.Close()
+	err := row.Scan(&id, &retrivedPassword)
 
-// 	result, err := stmt.Exec(&e.Name, &e.Description, &e.Location, &e.UserId, id)
+	if err != nil {
+		return nil, errors.New("Credentials Invalid!")
+	}
 
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+	paswordIsValid := utils.CheckPasswordHash(password, retrivedPassword)
 
-// 	id, err = result.RowsAffected()
+	if !paswordIsValid {
+		return nil, errors.New("Credentials Invalid!")
+	}
 
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
+	user, err := u.GetUser(id)
 
-// 	return id, nil
-// }
+	if err != nil {
+		return nil, err
+	}
 
-// func GetAllEvents() ([]Event, error) {
-// 	query := "SELECT * FROM events;"
-
-// 	rows, err := db.DB.Query(query)
-
-// 	fmt.Println(rows)
-
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	defer rows.Close()
-
-// 	var events []Event
-
-// 	for rows.Next() {
-// 		var event Event
-// 		err := rows.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.Created_At, &event.Updated_At, &event.UserId)
-
-// 		if err != nil {
-// 			return nil, err
-// 		}
-
-// 		event.Created_At, _ = time.Parse("2006-01-02 15:04:05", event.Created_At.Format("2006-01-02 15:04:05"))
-// 		event.Updated_At, _ = time.Parse("2006-01-02 15:04:05", event.Updated_At.Format("2006-01-02 15:04:05"))
-
-// 		events = append(events, event)
-// 	}
-
-// 	return events, nil
-// }
-
-// func (e *Event) DeleteEvent(id int64) (int64, error) {
-// 	query := "DELETE FROM events where id = ?"
-
-// 	stmt, err := db.DB.Prepare(query)
-
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	defer stmt.Close()
-
-// 	result, err := stmt.Exec(id)
-
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	id, err = result.RowsAffected()
-
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-
-// 	return id, nil
-// }
+	return user, nil
+}
