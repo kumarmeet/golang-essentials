@@ -8,6 +8,10 @@ import (
 	"github.com/learning-webserver/models"
 )
 
+func UploadFile(ctx *gin.Context) {
+	ctx.JSON(http.StatusOK, gin.H{"message": "File uploaded successfully"})
+}
+
 func GetEvents(ctx *gin.Context) {
 	events, err := models.GetAllEvents()
 
