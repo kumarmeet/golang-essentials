@@ -40,6 +40,8 @@ func GetEventById(ctx *gin.Context) {
 }
 
 func DeleteEventById(ctx *gin.Context) {
+	userId := ctx.GetInt64("userId")
+
 	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 
 	if err != nil {
@@ -54,16 +56,17 @@ func DeleteEventById(ctx *gin.Context) {
 		return
 	}
 
-	events, err := event.DeleteEvent(eventId)
+	events, err := event.DeleteEvent(eventId, userId)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Could not fetch event, try again later!"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{"status": true, "data": events})
 }
 func UpdateEventById(ctx *gin.Context) {
+	userId := ctx.GetInt64("userId")
 	eventId, err := strconv.ParseInt(ctx.Param("id"), 10, 64)
 
 	if err != nil {
@@ -80,10 +83,10 @@ func UpdateEventById(ctx *gin.Context) {
 		return
 	}
 
-	events, err := event.UpdateEvent(eventId)
+	events, err := event.UpdateEvent(eventId, userId)
 
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{"message": "Could not fetch event, try again later!"})
+		ctx.JSON(http.StatusBadRequest, gin.H{"message": err.Error()})
 		return
 	}
 

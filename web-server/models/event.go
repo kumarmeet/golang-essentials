@@ -1,6 +1,7 @@
 package models
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"time"
@@ -64,8 +65,8 @@ func (e *Event) GetEvent(id int64) (*Event, error) {
 	return e, nil
 }
 
-func (e *Event) UpdateEvent(id int64) (int64, error) {
-	query := "UPDATE events SET name = ?, description = ?, location = ?, user_id = ? where id = ?"
+func (e *Event) UpdateEvent(id int64, userId int64) (int64, error) {
+	query := "UPDATE events SET name = ?, description = ?, location = ?, user_id = ? where id = ? and user_id = ?"
 
 	stmt, err := db.DB.Prepare(query)
 
@@ -84,6 +85,10 @@ func (e *Event) UpdateEvent(id int64) (int64, error) {
 	}
 
 	id, err = result.RowsAffected()
+
+	if id == 0 {
+		return 0, errors.New("You are not authorized to delete this event")
+	}
 
 	if err != nil {
 		log.Fatal(err)
@@ -148,8 +153,8 @@ func GetAllEvents() ([]Event, error) {
 // 	}
 // }
 
-func (e *Event) DeleteEvent(id int64) (int64, error) {
-	query := "DELETE FROM events where id = ?"
+func (e *Event) DeleteEvent(id int64, userId int64) (int64, error) {
+	query := "DELETE FROM events where id = ? AND user_id = ?"
 
 	stmt, err := db.DB.Prepare(query)
 
@@ -159,13 +164,17 @@ func (e *Event) DeleteEvent(id int64) (int64, error) {
 
 	defer stmt.Close()
 
-	result, err := stmt.Exec(id)
+	result, err := stmt.Exec(id, userId)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	id, err = result.RowsAffected()
+
+	if id == 0 {
+		return 0, errors.New("You are not authorized to delete this event")
+	}
 
 	if err != nil {
 		log.Fatal(err)

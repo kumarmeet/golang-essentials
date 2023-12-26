@@ -1,4 +1,4 @@
-DELETE   http://localhost:4000/events/17
+DELETE   http://localhost:4000/events/7
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJleHAiOjE3MDM2MDIzMDcsImlkIjoxfQ.YC9IgwLLDsTsLNsTryQL_mtQPfg28ccwqtYiML31QfY
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3QyQHRlc3QuY29tIiwiZXhwIjoxNzAzNjA5OTk2LCJpZCI6N30.nN7r3NJTK6LCnrwW-diYkCeyFjlf9RKQfB2md66LHn0
 
