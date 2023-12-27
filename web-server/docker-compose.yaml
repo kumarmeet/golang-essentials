@@ -5,9 +5,9 @@ services:
     image: "mysql:8.0"
     volumes:
       - data:/var/lib/mysql
-    environment:
-      - MYSQL_USER=meet
-      - MYSQL_ROOT_PASSWORD=password
+    # environment:
+    #   - MYSQL_USER=root
+    #   - MYSQL_ROOT_PASSWORD=password
     ports:
       - "3307:3306"
     env_file:
@@ -27,6 +27,14 @@ services:
       - logs:/app/gin.log #named volume
       # - ./backend:/app #bind volume
       # - /app/node_modules # anonymous volume
+    depends_on:
+      - mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
     depends_on:
       - mysql
 

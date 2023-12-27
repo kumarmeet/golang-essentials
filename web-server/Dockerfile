@@ -30,6 +30,7 @@ WORKDIR /root/
 COPY --from=builder /app/server .
 
 COPY .env /root/
+COPY mysql.env /root/
 
 # Expose port 8080 to the outside world
 EXPOSE 4000

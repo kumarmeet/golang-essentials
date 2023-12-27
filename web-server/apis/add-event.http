@@ -1,6 +1,6 @@
 POST http://localhost:4000/events
 Content-Type: application/json
-Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJleHAiOjE3MDM2MDIzMDcsImlkIjoxfQ.YC9IgwLLDsTsLNsTryQL_mtQPfg28ccwqtYiML31QfY
+Authorization: eeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJleHAiOjE3MDM3MTczMjAsImlkIjoxfQ.orrbTvUi_fYjjPsbsgH8EgpPFAa_M7UZ5E7HxP1EtKk
 
 {
   "name": "Programming hackathon4",

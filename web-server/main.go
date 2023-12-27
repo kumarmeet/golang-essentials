@@ -13,9 +13,11 @@ import (
 
 func main() {
 	server := gin.Default()
-	db.InitDB()
 
 	err := godotenv.Load(".env")
+	err = godotenv.Load("mysql.env")
+
+	db.InitDB()
 
 	f, _ := os.Create("gin.log")
 
