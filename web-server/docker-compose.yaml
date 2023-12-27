@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: "mysql:8.0"
+    volumes:
+      - data:/var/lib/mysql
+    environment:
+      - MYSQL_USER=meet
+      - MYSQL_ROOT_PASSWORD=password
+    ports:
+      - "3307:3306"
+    env_file:
+      - ./mysql.env
+    # networks:
+    #   - new_app
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 4000:4000
+    env_file:
+      - ./.env
+    volumes:
+      - logs:/app/gin.log #named volume
+      # - ./backend:/app #bind volume
+      # - /app/node_modules # anonymous volume
+    depends_on:
+      - mysql
+
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - 3000:3000
+  #   volumes:
+  #     - ./frontend/src:/app/src
+  #   stdin_open: true
+  #   tty: true
+  #   depends_on:
+  #     - backend
+
+volumes:
+  data:
+  logs:

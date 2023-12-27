@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log" // Import the log package for logging errors
 
 	_ "github.com/go-sql-driver/mysql"
@@ -12,7 +13,12 @@ var DB *sql.DB
 func InitDB() {
 	// Use a single equal sign to assign to the global variable instead of :=
 	var err error
-	DB, err = sql.Open("mysql", "root:password@tcp(127.0.0.1:3306)/event?parseTime=true")
+	// DB, err = sql.Open("mysql", "root:password@tcp(127.0.0.1:3306)/event?parseTime=true")
+	// DB, err = sql.Open("mysql", "root:password@tcp(host.docker.internal:3306)/event?parseTime=true")
+	// mysqlString := os.Getenv("MYSQL_USER") + ":" + os.Getenv("MYSQL_PASSWORD") + "@tcp(" + "mysql" + ":" + "3306" + ")/" + "event" + "?parseTime=true"
+	mysqlString := "meet" + ":" + "password" + "@tcp(" + "mysql" + ":" + "3306" + ")/" + "event" + "?parseTime=true"
+	fmt.Println(mysqlString)
+	DB, err = sql.Open("mysql", mysqlString)
 
 	if err != nil {
 		log.Fatal("DB not connected:", err) // Use log.Fatal to log the error and exit the program
