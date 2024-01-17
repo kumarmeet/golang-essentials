@@ -1,0 +1,48 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: "mysql:8.0"
+    volumes:
+      - data:/var/lib/mysql
+    environment:
+      # - MYSQL_USER=root
+      - MYSQL_ROOT_PASSWORD=password
+    ports:
+      - "3308:3306"
+    # env_file:
+    #   - ./mysql.env
+    # networks:
+    #   - new_app
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    # image: mbaba317468/golangwebserver:latest
+    ports:
+      - 4001:4001
+    environment:
+      - APP_ENV=local
+      - APP_PORT=4001
+    env_file:
+      - ./.env.local
+    volumes:
+      - logs:/root/gin.log #named volume
+      - ./:/app #bind volume
+      # - /app/node_modules # anonymous volume
+    depends_on:
+      - mysql
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080 
+    depends_on:
+      - mysql
+
+
+volumes:
+  data:
+  logs:
