@@ -2,10 +2,11 @@ package utils
 
 import (
 	"errors"
-	"os"
+	"log"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/learning-webserver/config"
 )
 
 // GenerateToken creates a new JWT token for a given email and userId.
@@ -19,7 +20,14 @@ func GenerateToken(email string, userId int64) (string, error) {
 	// Create a new token with the specified signing method and claims.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	// Sign and return the token as a string using the secret key from the environment variable.
-	return token.SignedString([]byte(os.Getenv("JWT_SECRETKEY")))
+
+	cfg, err := config.LoadConfig()
+
+	if err != nil {
+		log.Fatal("Error loading config file")
+	}
+
+	return token.SignedString([]byte(cfg.AppJWT))
 }
 
 func verifyMethod(token *jwt.Token) (interface{}, error) {
@@ -27,7 +35,13 @@ func verifyMethod(token *jwt.Token) (interface{}, error) {
 		return nil, errors.New("unexpected signing method")
 	}
 
-	return []byte(os.Getenv("JWT_SECRETKEY")), nil
+	cfg, err := config.LoadConfig()
+
+	if err != nil {
+		log.Fatal("Error loading config file")
+	}
+
+	return []byte(cfg.AppJWT), nil
 }
 
 func VerifyToken(tokenStr string) (int64, error) {
