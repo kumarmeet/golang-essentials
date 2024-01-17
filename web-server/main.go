@@ -7,6 +7,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/learning-webserver/config"
 	"github.com/learning-webserver/db"
 	"github.com/learning-webserver/routes"
 )
@@ -14,10 +15,15 @@ import (
 func main() {
 	server := gin.Default()
 
-	err := godotenv.Load(".env")
+	cfg, err := config.LoadConfig()
+
+	if err != nil {
+		log.Fatal("Error loading config file")
+	}
+
 	err = godotenv.Load("mysql.env")
 
-	db.InitDB()
+	db.InitDB(cfg.AppDB)
 
 	f, _ := os.Create("gin.log")
 
@@ -29,5 +35,5 @@ func main() {
 
 	routes.RegisterEventRoutes(server)
 
-	server.Run(":4000")
+	server.Run(":" + cfg.AppPort)
 }
