@@ -1,2 +1,14 @@
 run the project
-go run github.com/cosmtrek/air
+
+APP_ENV=local go run . 
+
+or
+
+for production
+docker compose -f docker-compose-production.yaml build --build-arg APP_ENV=production --build-arg PORT=4000 && compose -f docker-compose-production.yaml up -d
+
+for local
+docker compose -f docker-compose-local.yaml build --build-arg APP_ENV=local --build-arg PORT=4001 && compose -f docker-compose-local.yaml up -d
+
+for staging
+docker compose -f docker-compose-staging.yaml build --build-arg APP_ENV=staging --build-arg PORT=4002 && compose -f docker-compose-staging.yaml up -d
