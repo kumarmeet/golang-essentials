@@ -11,12 +11,12 @@ import (
 
 var DB *sql.DB
 
-func InitDB() {
+func InitDB(dbName string) {
 	// Use a single equal sign to assign to the global variable instead of :=
 	var err error
 	// DB, err = sql.Open("mysql", "root:password@tcp(127.0.0.1:3306)/event?parseTime=true")
 	// DB, err = sql.Open("mysql", "root:password@tcp(host.docker.internal:3306)/event?parseTime=true")
-	mysqlString := os.Getenv("MYSQL_USER") + ":" + os.Getenv("MYSQL_ROOT_PASSWORD") + "@tcp(" + "mysql" + ":" + "3306" + ")/" + "event" + "?parseTime=true"
+	mysqlString := os.Getenv("MYSQL_USER") + ":" + os.Getenv("MYSQL_ROOT_PASSWORD") + "@tcp(" + "mysql" + ":" + "3306" + ")/" + dbName + "?parseTime=true"
 	fmt.Println("mysqlString", mysqlString)
 	// mysqlString := "meet" + ":" + "password" + "@tcp(" + "mysql" + ":" + "3306" + ")/" + "event" + "?parseTime=true"
 	DB, err = sql.Open("mysql", mysqlString)
@@ -27,8 +27,16 @@ func InitDB() {
 
 	DB.SetMaxOpenConns(10)
 	DB.SetMaxIdleConns(5)
+	createDatabase(dbName)
 
 	createTables()
+}
+
+func createDatabase(dbName string) {
+	_, err := DB.Exec("CREATE DATABASE IF NOT EXISTS " + dbName)
+	if err != nil {
+		log.Fatal("Error creating database event_prod:", err)
+	}
 }
 
 func createTables() {
