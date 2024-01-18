@@ -19,6 +19,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - APP_ENV=local
+        - APP_PORT=4001
     # image: mbaba317468/golangwebserver:latest
     ports:
       - 4001:4001
