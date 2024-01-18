@@ -14,12 +14,13 @@ RUN go mod download
 COPY . .
 
 # Build the Go app
-ARG APP_ENV
-ARG PORT
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server -ldflags "-X main.Environment=$APP_ENV" .
 
 # Start a new stage from Alpine Linux
 FROM alpine:latest  
+
+ARG APP_ENV
+ARG PORT
 
 # Install ca-certificates in case you need to call HTTPS endpoints
 RUN apk --no-cache add ca-certificates
