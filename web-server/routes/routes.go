@@ -9,6 +9,8 @@ import (
 func RegisterEventRoutes(server *gin.Engine) {
 	server.MaxMultipartMemory = 10 << 20 // 10mb
 
+	server.Use(middlewares.RateLimit())
+
 	server.POST("/signups", controllers.Signup)
 	server.POST("/login", controllers.Login)
 	server.GET("/events", controllers.GetEvents)
