@@ -7,6 +7,12 @@ import (
 )
 
 func RegisterEventRoutes(server *gin.Engine) {
+	server.MaxMultipartMemory = 10 << 20 // 10mb
+
+	server.POST("/signups", controllers.Signup)
+	server.POST("/login", controllers.Login)
+	server.GET("/events", controllers.GetEvents)
+
 	authenticated := server.Group("/")
 	authenticated.Use(middlewares.Authenticate)
 	authenticated.GET("/events/:id", controllers.GetEventById)
@@ -14,9 +20,10 @@ func RegisterEventRoutes(server *gin.Engine) {
 	authenticated.PUT("/events/:id", controllers.UpdateEventById)
 	authenticated.DELETE("/events/:id", controllers.DeleteEventById)
 
-	server.POST("/upload", middlewares.UploadMultipleFilesMiddleware(), controllers.UploadFile)
+	users := server.Group("/users")
+	users.Use(middlewares.Authenticate)
+	users.GET("", controllers.Users)
 
-	server.GET("/events", controllers.GetEvents)
-	server.POST("/signups", controllers.Signup)
-	server.POST("/login", controllers.Login)
+	server.POST("/xlsx/upload", middlewares.UploadMultipleFilesMiddleware([]string{".xls", ".xlsx", ".csv"}), controllers.ImportCsvXlsx)
+	server.POST("/image/upload/:event_id", middlewares.UploadMultipleFilesMiddleware([]string{".png", ".jpg", ".jpeg", ".gif"}), controllers.UploadFile)
 }
