@@ -1,4 +1,6 @@
-POST http://localhost:4000/signups
+# POST http://localhost:4000/signups
+# POST http://ip172-18-0-101-cm6lt5tnp9tg00a3q4h0-4000.direct.labs.play-with-docker.com/signups
+POST http://localhost:4001/signups
 Content-Type: application/json
 
 {
@@ -6,3 +8,4 @@ Content-Type: application/json
     "email": "test@test.com",
     "password": "123456"
 }
+

@@ -90,3 +90,16 @@ func Login(ctx *gin.Context) {
 		"token":   token,
 	})
 }
+
+func Users(ctx *gin.Context) {
+	var users models.User
+
+	data, err := users.GetAllUsers()
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"message": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{"status": true, "data": data})
+}

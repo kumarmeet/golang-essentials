@@ -13,9 +13,38 @@ type User struct {
 	ID         int64     `json:"id"`
 	Name       string    `json:"name" binding:"required"`
 	Email      string    `json:"email" binding:"required"`
-	Password   string    `json:"password" binding:"required"`
+	Password   string    `json:"password,omitempty" binding:"required"`
 	Created_At time.Time `json:"created_at"`
 	Updated_At time.Time `json:"updated_at"`
+}
+
+func (u *User) GetAllUsers() ([]User, error) {
+	query := "SELECT * FROM users;"
+
+	rows, err := db.DB.Query(query)
+
+	defer rows.Close()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var users []User
+
+	for rows.Next() {
+		var user User
+
+		err := rows.Scan(&user.ID, &user.Name, &user.Email, &user.Password, &user.Created_At, &user.Updated_At)
+
+		if err != nil {
+			return nil, err
+		}
+
+		users = append(users, user)
+	}
+
+	return users, nil
+
 }
 
 func (u *User) Save() (int64, error) {

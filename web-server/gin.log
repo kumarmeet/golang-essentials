@@ -1,11 +1,13 @@
+[GIN-debug] POST   /signups                  --> github.com/learning-webserver/controllers.Signup (3 handlers)
+[GIN-debug] POST   /login                    --> github.com/learning-webserver/controllers.Login (3 handlers)
+[GIN-debug] GET    /events                   --> github.com/learning-webserver/controllers.GetEvents (3 handlers)
 [GIN-debug] GET    /events/:id               --> github.com/learning-webserver/controllers.GetEventById (4 handlers)
 [GIN-debug] POST   /events                   --> github.com/learning-webserver/controllers.InsertEvent (4 handlers)
 [GIN-debug] PUT    /events/:id               --> github.com/learning-webserver/controllers.UpdateEventById (4 handlers)
 [GIN-debug] DELETE /events/:id               --> github.com/learning-webserver/controllers.DeleteEventById (4 handlers)
-[GIN-debug] POST   /upload                   --> github.com/learning-webserver/controllers.UploadFile (4 handlers)
-[GIN-debug] GET    /events                   --> github.com/learning-webserver/controllers.GetEvents (3 handlers)
-[GIN-debug] POST   /signups                  --> github.com/learning-webserver/controllers.Signup (3 handlers)
-[GIN-debug] POST   /login                    --> github.com/learning-webserver/controllers.Login (3 handlers)
+[GIN-debug] GET    /users                    --> github.com/learning-webserver/controllers.Users (4 handlers)
+[GIN-debug] POST   /xlsx/upload              --> github.com/learning-webserver/controllers.ImportCsvXlsx (4 handlers)
+[GIN-debug] POST   /image/upload/:event_id   --> github.com/learning-webserver/controllers.UploadFile (4 handlers)
 [GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
 Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
-[GIN-debug] Listening and serving HTTP on :4000
+[GIN-debug] Listening and serving HTTP on :4001

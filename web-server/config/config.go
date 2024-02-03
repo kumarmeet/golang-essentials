@@ -20,7 +20,7 @@ func LoadConfig() (*Config, error) {
 	fmt.Println(fmt.Sprintf(".env.%s", os.Getenv("APP_ENV")))
 
 	if err != nil {
-		return nil, fmt.Errorf("Error loading .%s.env file", os.Getenv("APP_ENV"))
+		return nil, fmt.Errorf("Error loading .env.%s file", os.Getenv("APP_ENV"))
 	}
 
 	return &Config{

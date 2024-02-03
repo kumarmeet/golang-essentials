@@ -39,7 +39,10 @@ services:
 
   adminer:
     image: adminer
+    container_name: adminer_golang
     restart: always
+    environment:
+      - ADMINER_DESIGN="nette"
     ports:
       - 8080:8080 
     depends_on:

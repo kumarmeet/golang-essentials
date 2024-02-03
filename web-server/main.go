@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -16,6 +17,8 @@ func main() {
 	server := gin.Default()
 
 	cfg, err := config.LoadConfig()
+
+	fmt.Println(cfg)
 
 	if err != nil {
 		log.Fatal("Error loading config file")
