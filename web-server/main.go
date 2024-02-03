@@ -36,7 +36,7 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
-	routes.RegisterEventRoutes(server)
+	routes.MainRoutes(server)
 
 	server.Run(":" + cfg.AppPort)
 }
