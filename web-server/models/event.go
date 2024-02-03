@@ -19,7 +19,52 @@ type Event struct {
 	UserId      int64     `json:"user_id"`
 }
 
+type EventImage struct {
+	ID         int64     `json:"id"`
+	EventId    int64     `json:"event_id"`
+	ImageUrl   string    `json:"image_url"`
+	Created_At time.Time `json:"created_at"`
+	Updated_At time.Time `json:"updated_at"`
+}
+
 // var events []Event = []Event{}
+
+func (e *EventImage) Save(imageUrl string, eventId int64) (EventImage, error) {
+	query := `INSERT INTO event_images(image_url, event_id) VALUES (?, ?)`
+
+	stmt, err := db.DB.Prepare(query)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	defer stmt.Close()
+
+	result, err := stmt.Exec(imageUrl, eventId)
+
+	if err != nil {
+		return EventImage{}, err
+	}
+
+	id, err := result.LastInsertId()
+
+	if err != nil {
+		return EventImage{}, err
+	}
+
+	query = "SELECT id, event_id, image_url, created_at, updated_at FROM event_images WHERE id = ?"
+	row := db.DB.QueryRow(query, id)
+
+	var eventImage EventImage
+
+	err = row.Scan(&eventImage.ID, &eventImage.EventId, &eventImage.ImageUrl, &eventImage.Created_At, &eventImage.Updated_At)
+
+	if err != nil {
+		return EventImage{}, err
+	}
+
+	return eventImage, nil
+}
 
 func (e *Event) Save() (int64, error) {
 	query := `
@@ -172,7 +217,7 @@ func (e *Event) DeleteEvent(id int64, userId int64) (int64, error) {
 
 	id, err = result.RowsAffected()
 
-	if id == 0 {
+	if userId == 0 {
 		return 0, errors.New("You are not authorized to delete this event")
 	}
 
