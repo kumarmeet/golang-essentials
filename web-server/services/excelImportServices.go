@@ -50,7 +50,7 @@ func mergeEmergencyAndProposers(excelData []map[string]interface{}, emergencyDat
 	for i, data := range excelData {
 		if i < len((*emergencyData)["Emergency Contact"]) {
 			data["Emergency Contact"] = (*emergencyData)["Emergency Contact"][k : k+2] // Get 2 values from emergencyData
-			data["Proposers"] = (*proposerData)["Proposers"][k : k+2]                  // Get 2 values from emergencyData
+			data["Proposers"] = (*proposerData)["Proposers"][k : k+2]                  // Get 2 values from proposerData
 			k += 2
 		} else {
 			break // If there are no more emergency contacts, stop the loop
