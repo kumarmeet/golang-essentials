@@ -16,7 +16,8 @@ func InitDB(dbName string) {
 	var err error
 	// DB, err = sql.Open("mysql", "root:password@tcp(127.0.0.1:3306)/event?parseTime=true")
 	// DB, err = sql.Open("mysql", "root:password@tcp(host.docker.internal:3306)/event?parseTime=true")
-	mysqlString := os.Getenv("MYSQL_USER") + ":" + os.Getenv("MYSQL_ROOT_PASSWORD") + "@tcp(" + "mysql" + ":" + "3306" + ")/" + dbName + "?parseTime=true"
+	// mysqlString := os.Getenv("MYSQL_USER") + ":" + os.Getenv("MYSQL_ROOT_PASSWORD") + "@tcp(" + "mysql" + ":" + "3308" + ")/" + dbName + "?parseTime=true"
+	mysqlString := os.Getenv("MYSQL_USER") + ":" + os.Getenv("MYSQL_ROOT_PASSWORD") + "@tcp(" + "localhost" + ":" + "3308" + ")/" + dbName + "?parseTime=true"
 	fmt.Println("mysqlString", mysqlString)
 	// mysqlString := "meet" + ":" + "password" + "@tcp(" + "mysql" + ":" + "3306" + ")/" + "event" + "?parseTime=true"
 	DB, err = sql.Open("mysql", mysqlString)
@@ -33,9 +34,10 @@ func InitDB(dbName string) {
 }
 
 func createDatabase(dbName string) {
+	fmt.Println("dbName", dbName)
 	_, err := DB.Exec("CREATE DATABASE IF NOT EXISTS " + dbName)
 	if err != nil {
-		log.Fatal("Error creating database event_prod:", err)
+		log.Fatal("Error creating database "+dbName+" -> ", err)
 	}
 }
 
@@ -71,6 +73,22 @@ func createTables() {
 	);
 `
 	_, err = DB.Exec(createEventsTable)
+
+	if err != nil {
+		log.Fatal("Could not create events table:", err) // Use log.Fatal to log the error and exit the program
+	}
+
+	createEventsImageTable := `
+	CREATE TABLE IF NOT EXISTS event_images (
+		id INTEGER PRIMARY KEY AUTO_INCREMENT, -- Use AUTO_INCREMENT for MySQL
+		image_url VARCHAR(255) NOT NULL,
+		created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Use DEFAULT CURRENT_TIMESTAMP for auto-setting timestamps
+		updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+		event_id INTEGER,
+		FOREIGN KEY(event_id) REFERENCES events(id)
+	);
+`
+	_, err = DB.Exec(createEventsImageTable)
 
 	if err != nil {
 		log.Fatal("Could not create events table:", err) // Use log.Fatal to log the error and exit the program
