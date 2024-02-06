@@ -1,2 +1,2 @@
 run the project
-go run github.com/cosmtrek/air
+go run .
