@@ -1,13 +1,10 @@
-[GIN-debug] POST   /xlsx/upload              --> github.com/learning-webserver/controllers.ImportCsvXlsx (5 handlers)
-[GIN-debug] POST   /image/upload/:event_id   --> github.com/learning-webserver/controllers.UploadFile (5 handlers)
-[GIN-debug] POST   /signups                  --> github.com/learning-webserver/controllers.Signup (4 handlers)
-[GIN-debug] POST   /login                    --> github.com/learning-webserver/controllers.Login (4 handlers)
-[GIN-debug] GET    /users                    --> github.com/learning-webserver/controllers.Users (5 handlers)
-[GIN-debug] GET    /events                   --> github.com/learning-webserver/controllers.GetEvents (4 handlers)
-[GIN-debug] GET    /events/:id               --> github.com/learning-webserver/controllers.GetEventById (5 handlers)
-[GIN-debug] POST   /events                   --> github.com/learning-webserver/controllers.InsertEvent (5 handlers)
-[GIN-debug] PUT    /events/:id               --> github.com/learning-webserver/controllers.UpdateEventById (5 handlers)
-[GIN-debug] DELETE /events/:id               --> github.com/learning-webserver/controllers.DeleteEventById (5 handlers)
-[GIN-debug] [WARNING] You trusted all proxies, this is NOT safe. We recommend you to set a value.
-Please check https://pkg.go.dev/github.com/gin-gonic/gin#readme-don-t-trust-all-proxies for details.
-[GIN-debug] Listening and serving HTTP on :4001
+[GIN-debug] POST   /xlsx/upload              --> github.com/learning-webserver/controllers.ImportCsvXlsx (6 handlers)
+[GIN-debug] POST   /image/upload/:event_id   --> github.com/learning-webserver/controllers.UploadFile (6 handlers)
+[GIN-debug] POST   /signups                  --> github.com/learning-webserver/controllers.Signup (5 handlers)
+[GIN-debug] POST   /login                    --> github.com/learning-webserver/controllers.Login (5 handlers)
+[GIN-debug] GET    /users                    --> github.com/learning-webserver/controllers.Users (6 handlers)
+[GIN-debug] GET    /events                   --> github.com/learning-webserver/controllers.GetEvents (5 handlers)
+[GIN-debug] GET    /events/:id               --> github.com/learning-webserver/controllers.GetEventById (6 handlers)
+[GIN-debug] POST   /events                   --> github.com/learning-webserver/controllers.InsertEvent (6 handlers)
+[GIN-debug] PUT    /events/:id               --> github.com/learning-webserver/controllers.UpdateEventById (6 handlers)
+[GIN-debug] DELETE /events/:id               --> github.com/learning-webserver/controllers.DeleteEventById (6 handlers)
