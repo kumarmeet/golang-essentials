@@ -11,25 +11,27 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/learning-webserver/config"
 	"github.com/learning-webserver/db"
+	"github.com/learning-webserver/middlewares"
 	"github.com/learning-webserver/routes"
-	"github.com/rs/cors"
 	"golang.org/x/net/http2"
 )
 
 func main() {
 	server := gin.Default()
 
-	corsMiddleware := cors.New(cors.Options{
-		AllowedOrigins:   []string{"*"},
-		AllowCredentials: true,
-		AllowedHeaders:   []string{"Authorization"},
-		AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete},
-	})
+	// corsMiddleware := cors.New(cors.Options{
+	// 	AllowedOrigins:   []string{"*"},
+	// 	AllowCredentials: true,
+	// 	AllowedHeaders:   []string{"Authorization"},
+	// 	AllowedMethods:   []string{http.MethodGet, http.MethodPost, http.MethodPut, http.MethodPatch, http.MethodDelete},
+	// })
 
-	server.Use(func(ctx *gin.Context) {
-		corsMiddleware.HandlerFunc(ctx.Writer, ctx.Request)
-		ctx.Next()
-	})
+	// server.Use(func(ctx *gin.Context) {
+	// 	corsMiddleware.HandlerFunc(ctx.Writer, ctx.Request)
+	// 	ctx.Next()
+	// })
+
+	server.Use(middlewares.Cors())
 
 	cfg, err := config.LoadConfig()
 
@@ -51,6 +53,9 @@ func main() {
 		log.Fatal("Error loading .env file")
 	}
 
+	//testing only
+	// services.SendMail([]string{"kumarmeet51@yahoo.com"})
+
 	routes.MainRoutes(server)
 
 	// Create an HTTP/2 server with the default transport
@@ -61,5 +66,9 @@ func main() {
 
 	http2.ConfigureServer(http2Server, &http2.Server{})
 
-	http2Server.ListenAndServe()
+	err = http2Server.ListenAndServe()
+
+	if err != nil {
+		panic(err)
+	}
 }
